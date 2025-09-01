@@ -13,7 +13,7 @@ from aiogram.types import Message
 from handlers.homework.homework import homework_router
 from handlers.schedule.schedule import schedule_router
 
-from utils import get_keyboard
+from utils import get_keyboard, start_webserver
 
 load_dotenv()
 
@@ -40,6 +40,8 @@ async def main() -> None:
         token=TOKEN, 
         default=DefaultBotProperties(parse_mode=ParseMode.HTML)
     )
+
+    asyncio.create_task(start_webserver())
 
     await dp.start_polling(bot)
 
