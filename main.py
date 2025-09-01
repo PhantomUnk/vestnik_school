@@ -13,7 +13,7 @@ from aiogram.types import Message
 from handlers.homework.homework import homework_router
 from handlers.schedule.schedule import schedule_router
 
-from utils import get_keyboard
+from utils import get_keyboard, start_webserver
 
 load_dotenv()
 
@@ -26,7 +26,6 @@ dp.include_router(schedule_router)
 
 ADMINS = [1890754637, 6256796672, 1866532717]
 
-
 @dp.message(CommandStart())
 async def command_start_handler(message: Message) -> None:
     kb = get_keyboard(message.from_user.id, ADMINS) # type: ignore
@@ -35,9 +34,17 @@ async def command_start_handler(message: Message) -> None:
 
 async def main() -> None:
     bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+
+    asyncio.create_task(start_webserver())
+
     await dp.start_polling(bot)
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO, stream=sys.stdout)
+    logging.basicConfig(
+        level=logging.INFO,
+        stream=sys.stdout,
+        format="%(asctime)s [%(levelname)s] %(message)s",  # <-- добавили время
+        datefmt="%Y-%m-%d %H:%M:%S"  # <-- формат времени
+    )
     asyncio.run(main())
