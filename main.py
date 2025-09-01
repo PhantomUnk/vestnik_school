@@ -13,7 +13,7 @@ from aiogram.types import Message
 from handlers.homework.homework import homework_router
 from handlers.schedule.schedule import schedule_router
 
-from utils import get_keyboard, start_webserver
+from utils import get_keyboard
 
 load_dotenv()
 
@@ -29,13 +29,17 @@ ADMINS = [1890754637, 6256796672, 1866532717]
 @dp.message(CommandStart())
 async def command_start_handler(message: Message) -> None:
     kb = get_keyboard(message.from_user.id, ADMINS) # type: ignore
-    await message.answer(f"Привет, {message.from_user.full_name}!", reply_markup=kb) # type: ignore
+    await message.answer(
+        f"Привет, {message.from_user.full_name}!", # type: ignore
+        reply_markup=kb
+    ) 
 
 
 async def main() -> None:
-    bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
-
-    asyncio.create_task(start_webserver())
+    bot = Bot(
+        token=TOKEN, 
+        default=DefaultBotProperties(parse_mode=ParseMode.HTML)
+    )
 
     await dp.start_polling(bot)
 
