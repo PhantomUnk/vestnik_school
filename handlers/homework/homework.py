@@ -20,15 +20,22 @@ async def get_homework(message: Message):
 
 @homework_router.message(F.text == "⬆️ Загрузить ДЗ")
 async def upload_homework(message: Message, state: FSMContext):
-    await message.answer("Отправь текст с новым ДЗ")
+    old_homework = read_homework()
+    formatted_homework = f"<pre>{old_homework}</pre>" # ? <pre> tag calls code menu in Telegram
+
+    await message.answer(
+        f"ДЗ другого Админа:\n\n{formatted_homework}\n\n<i>Нажмите на кнопку выше, чтобы скопировать</i> \n\nОтправь текст с новым ДЗ",
+        parse_mode="HTML"
+    )
+
     await state.set_state(HomeworkStates.waiting_for_homework_text)
 
 @homework_router.message(HomeworkStates.waiting_for_homework_text, F.text)
 async def handle_homework_text(message: Message, state: FSMContext):
-    new_homework = message.text.strip() #type: ignore
+    new_homework = message.text.strip() #type: ignore 
     write_homework(new_homework)
     await message.answer("✅ Домашнее задание успешно обновлено!")
-    await state.clear() 
+    await state.clear()
 
 @homework_router.message(HomeworkStates.waiting_for_homework_text)
 async def handle_wrong_input(message: Message):
