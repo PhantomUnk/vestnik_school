@@ -12,6 +12,7 @@ from aiogram.types import Message
 
 from handlers.homework.homework import homework_router
 from handlers.schedule.schedule import schedule_router
+from handlers.broadcast.broadcast import broadcast_router
 
 from utils import get_keyboard, start_webserver
 
@@ -21,8 +22,11 @@ TOKEN = getenv("TOKEN", "")
 
 dp = Dispatcher()
 
-dp.include_router(homework_router)
-dp.include_router(schedule_router)
+dp.include_routers(
+    homework_router, 
+    schedule_router, 
+    broadcast_router
+    )
 
 ADMINS = [1890754637, 6256796672, 1866532717]
 

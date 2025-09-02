@@ -4,7 +4,7 @@ from aiogram.types import Message, FSInputFile
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
 
-from handlers.schedule.utils import get_schedule_image, save_schedule_image
+from handlers.schedule.utils import get_schedule_image, save_schedule_image, send_broadcast
 
 schedule_router = Router()
 
@@ -35,11 +35,12 @@ async def handle_schedule_image(message: Message, state: FSMContext):
         
         if success:
             await message.answer("✅ Расписание успешно обновлено!")
+            await send_broadcast(message)
         else:
             await message.answer("❌ Произошла ошибка при сохранении расписания")
             
     except Exception as e:
-        await message.answer(f"❌ Ошибка: {str(e)}")
+        await message.answer(f"❌ Error: {str(e)}")
     finally:
         await state.clear()
 

@@ -4,7 +4,9 @@ from aiohttp import web
 
 def get_keyboard(user_id: int, ADMINS: list):
     buttons = [
-        [KeyboardButton(text="📚 Получить ДЗ"), KeyboardButton(text="📅 Получить расписание")]
+        [KeyboardButton(text="📚 Получить ДЗ"), 
+         KeyboardButton(text="📅 Получить расписание"), 
+         KeyboardButton(text="🔔 Подписаться на рассылку")]
     ]
     if user_id in ADMINS:
         buttons.append(

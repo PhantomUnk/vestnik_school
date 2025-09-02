@@ -1,4 +1,6 @@
 import os
+from aiogram.types import Message
+from handlers.broadcast.utils import get_broadcast_users
 
 HOMEWORK_FILE_PATH = os.path.join("files", "homework.txt")
 
@@ -19,3 +21,20 @@ def write_homework(text):
     ensure_files_directory()
     with open(HOMEWORK_FILE_PATH, "w", encoding="utf-8") as file:
         file.write(text)
+
+async def send_broadcast(message: Message, new_homework: str):
+    users = get_broadcast_users()
+    
+    formatted_homework = (
+        "📢 <b>Какой - то Админ добавил ДЗ!</b>\n\n"
+        f"{new_homework}\n\n"
+    )
+    
+    if message.bot is None:
+        return
+
+    for user_id in users:
+        try:
+            await message.bot.send_message(user_id, formatted_homework, parse_mode='HTML')
+        except Exception as e:
+            print(f"Error --- {e}")

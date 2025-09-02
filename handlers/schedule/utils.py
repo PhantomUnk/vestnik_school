@@ -2,7 +2,10 @@ import os
 import aiofiles
 from aiogram import Bot
 
-# Путь к файлу расписания
+from aiogram.types import Message, FSInputFile
+from handlers.broadcast.utils import get_broadcast_users
+
+# ? Path to schedule image
 SCHEDULE_IMAGE_PATH = os.path.join("files", "schedule.jpg")
 
 def ensure_files_directory():
@@ -35,3 +38,26 @@ async def save_schedule_image(bot: Bot, file_id: str):
     except Exception as e:
         print(f"Error saving schedule image: {e}")
         return False
+    
+async def send_broadcast(message: Message):
+    users = get_broadcast_users()
+
+    if message.bot is None:
+        return
+
+    image_path = get_schedule_image()
+
+    if not(image_path and os.path.exists(image_path)):
+        return
+
+    photo = FSInputFile(image_path) #type: ignore
+    for user_id in users:
+        try:
+            await message.bot.send_photo(
+                user_id,
+                photo, 
+                caption="📢 <b>Какой - то Админ добавил расписание!</b>\n\n", 
+                parse_mode='HTML'
+            )
+        except Exception as e:
+            print(f"Error --- {e}")
