@@ -155,7 +155,7 @@ files/  # Исключаем папку files, но можно оставить 
 
 # Bot specific
 *.session
-*.json
+# *.json
 
 # Temporary files
 temp/
