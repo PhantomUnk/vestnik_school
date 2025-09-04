@@ -28,7 +28,7 @@ dp.include_routers(
     broadcast_router
     )
 
-ADMINS = [1890754637, 6256796672, 1866532717]
+ADMINS = [1890754637, 6256796672, 1866532717, 5472755934]
 
 @dp.message(CommandStart())
 async def command_start_handler(message: Message) -> None:
@@ -54,7 +54,7 @@ if __name__ == "__main__":
     logging.basicConfig(
         level=logging.INFO,
         stream=sys.stdout,
-        format="%(asctime)s [%(levelname)s] %(message)s",  # <-- добавили время
-        datefmt="%Y-%m-%d %H:%M:%S"  # <-- формат времени
+        format="%(asctime)s [%(levelname)s] %(message)s",  # ? add time
+        datefmt="%Y-%m-%d %H:%M:%S"  # ? time format
     )
     asyncio.run(main())
