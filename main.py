@@ -2,7 +2,6 @@ import asyncio
 import logging
 import sys
 from os import getenv
-from dotenv import load_dotenv
 
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
@@ -10,13 +9,10 @@ from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart
 from aiogram.types import Message
 
-from handlers.homework.homework import homework_router
-from handlers.schedule.schedule import schedule_router
-from handlers.broadcast.broadcast import broadcast_router
+
+from handlers import homework_router, schedule_router, broadcast_router
 
 from utils import get_keyboard, start_webserver
-
-load_dotenv()
 
 TOKEN = getenv("TOKEN", "")
 
@@ -28,11 +24,10 @@ dp.include_routers(
     broadcast_router
     )
 
-ADMINS = [1890754637, 6256796672, 1866532717, 5472755934]
 
 @dp.message(CommandStart())
 async def command_start_handler(message: Message) -> None:
-    kb = get_keyboard(message.from_user.id, ADMINS) # type: ignore
+    kb = get_keyboard(message.from_user.id) # type: ignore
     await message.answer(
         f"Привет, {message.from_user.full_name}!", # type: ignore
         reply_markup=kb

@@ -1,8 +1,10 @@
 import os
+
 from aiogram import Router, F
 from aiogram.types import Message, FSInputFile
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
+from aiogram.filters import Command
 
 from handlers.schedule.utils import get_schedule_image, save_schedule_image, send_broadcast
 
@@ -22,8 +24,13 @@ async def get_schedule(message: Message):
 
 @schedule_router.message(F.text == "⬆️ Загрузить расписание")
 async def upload_schedule(message: Message, state: FSMContext):
-    await message.answer("Отправьте изображение с расписанием")
+    await message.answer("Отправьте изображение с расписанием. \n\nОтправь /back если хочешь отменить отправку расписания")
     await state.set_state(ScheduleStates.waiting_for_schedule_img)
+
+@schedule_router.message(ScheduleStates.waiting_for_schedule_img, Command(commands=['back']))
+async def cancel_schedule_update(message: Message, state: FSMContext):
+    await state.clear()
+    await message.answer("❌ Отправка расписания отменена. Вы вернулись в главное меню.")
 
 @schedule_router.message(ScheduleStates.waiting_for_schedule_img, F.photo)
 async def handle_schedule_image(message: Message, state: FSMContext):

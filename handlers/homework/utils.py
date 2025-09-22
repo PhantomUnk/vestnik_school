@@ -23,15 +23,15 @@ def write_homework(text):
         file.write(text)
 
 async def send_broadcast(message: Message, new_homework: str):
+    if message.bot is None:
+        return
+    
     users = get_broadcast_users()
     
     formatted_homework = (
         "📢 <b>Какой - то Админ добавил ДЗ!</b>\n\n"
         f"{new_homework}\n\n"
     )
-    
-    if message.bot is None:
-        return
 
     for user_id in users:
         try:

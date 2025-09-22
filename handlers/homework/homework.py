@@ -2,6 +2,8 @@ from aiogram import Router, F
 from aiogram.types import Message
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
+from aiogram.filters import Command
+
 
 from handlers.homework.utils import read_homework, write_homework, send_broadcast
 
@@ -13,7 +15,7 @@ class HomeworkStates(StatesGroup):
 @homework_router.message(F.text == "📚 Получить ДЗ")
 async def get_homework(message: Message):
     homework_text = read_homework()
-    await message.answer(f"ДЗ:\n{homework_text}")
+    await message.answer(f"{homework_text}")
 
 @homework_router.message(F.text == "⬆️ Загрузить ДЗ")
 async def upload_homework(message: Message, state: FSMContext):
@@ -21,11 +23,16 @@ async def upload_homework(message: Message, state: FSMContext):
     formatted_homework = f"<pre>{old_homework}</pre>" 
 
     await message.answer(
-        f"ДЗ другого Админа:\n\n{formatted_homework}\n\n<i>Нажмите на кнопку выше, чтобы скопировать</i> \n\nОтправь текст с новым ДЗ",
+        f"ДЗ другого Админа:\n\n{formatted_homework}\n\n<i>Нажмите на кнопку выше, чтобы скопировать</i> \n\nОтправь текст с новым ДЗ \n\nОтправь /back если хочешь отменить отправку ДЗ",
         parse_mode="HTML"
     )
 
     await state.set_state(HomeworkStates.waiting_for_homework_text)
+
+@homework_router.message(HomeworkStates.waiting_for_homework_text, Command(commands=['back']))
+async def cancel_homework_update(message: Message, state: FSMContext):
+    await state.clear()
+    await message.answer("❌ Отправка ДЗ отменена. Вы вернулись в главное меню.")
 
 @homework_router.message(HomeworkStates.waiting_for_homework_text, F.text)
 async def handle_homework_text(message: Message, state: FSMContext):

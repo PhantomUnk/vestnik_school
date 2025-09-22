@@ -2,7 +2,17 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
 from aiohttp import web
 
-def get_keyboard(user_id: int, ADMINS: list):
+from os import getenv
+
+import ast
+
+from dotenv import load_dotenv
+
+load_dotenv()
+
+ADMINS = ast.literal_eval(str(getenv("ADMINS", []))) # ? convert to list
+
+def get_keyboard(user_id: int):
     buttons = [
         [KeyboardButton(text="📚 Получить ДЗ"), 
          KeyboardButton(text="📅 Получить расписание"), 
